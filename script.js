@@ -51,8 +51,8 @@ function createAddPopup(marker) {
     `;
 
     var customOptions = {
-        width: "1000", // Ubah ukuran maksimum lebar popup
-        maxHeight: "500" // Ubah ukuran maksimum tinggi popup (opsional)
+        width: "1000", 
+        maxHeight: "500" 
     };
 
     marker.bindPopup(popupContent, customOptions).openPopup();
@@ -84,10 +84,9 @@ function addPOI(poi) {
         type: 'POST',
         data: poi,
         success: function (data) {
-            // Refresh map or perform other actions as needed
             console.log('New POI added successfully');
-            marker.closePopup(); // Close popup after adding POI
-            readPOI(); // Refresh POI markers
+            marker.closePopup(); 
+            readPOI(); 
         },
         error: function (xhr, status, error) {
             console.error('Error adding new POI:', error);
@@ -217,60 +216,46 @@ function readPOI(){
 
 readPOI();
 
-// $(document).ready(function(){
-//     $(".editBtn").click(function(){
-//       $("#myModal").modal();
-//     });
-//   });
-
-// Function to delete a POI from the database
 function deletePOI(id) {
     $.ajax({
-        url: 'delete.php', // endpoint to delete POI
+        url: 'delete.php', 
         type: 'POST',
         data: { id: id },
         success: function(response) {
-            alert(response); // Menampilkan pesan dari server
-            fetchPOIs(); // Refresh peta setelah penghapusan berhasil
+            alert(response); 
+            fetchPOIs(); 
         },
         error: function(xhr, status, error) {
-            console.error(error); // Menampilkan pesan kesalahan jika terjadi
+            console.error(error); 
         }
     });
 }
 
 
-// Tambahkan event listener untuk context menu menghapus data
 map.on('contextmenu', function(e) {
     var latlng = e.latlng;
 
-    // Menutup pop-up sebelumnya jika ada
     if (currentPopup !== null) {
         currentPopup.closePopup();
         currentPopup = null;
     }
 
-    // Menghapus marker sebelumnya jika ada
     if (previousMarker !== null) {
         map.removeLayer(previousMarker);
     }
 
-    // Membuka pop-up baru untuk konfirmasi penghapusan
     var newMarker = L.marker(latlng).addTo(map)
         .bindPopup('Apakah Anda yakin ingin menghapus POI ini?<br><br><button id="confirm-delete">Hapus</button>')
         .openPopup();
 
-    // Menyimpan pop-up saat ini
     currentPopup = newMarker.getPopup();
 
-    // Menyimpan marker saat ini sebagai marker sebelumnya
     previousMarker = newMarker;
 
-    // Menambah event listener ke tombol hapus di dalam pop-up
     $('#confirm-delete').on('click', function() {
         deletePOI(newMarker.id);
         map.removeLayer(newMarker);
-        currentPopup.remove(); // Menghapus pop-up saat tombol "Hapus" diklik
+        currentPopup.remove(); 
     });
 });
 
